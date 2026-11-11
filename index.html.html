@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanzas Inteligentes | Simulador GCP</title>
+<style>
+:root{--bg:#f3f6fb;--panel:#fff;--ink:#172033;--muted:#667085;--line:#e4e9f1;--navy:#14233f;--blue:#2563eb;--cyan:#0891b2;--green:#16845b;--amber:#b7791f;--red:#c2413b;--shadow:0 12px 32px rgba(23,32,51,.07);--radius:17px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(120deg,#101f3b,#183e69 65%,#12627a);color:white;padding:34px max(22px,calc((100% - 1200px)/2)) 28px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#b9d9f6;font-weight:800}.tag{border:1px solid #ffffff55;border-radius:99px;padding:5px 11px;font-size:12px;color:#e6f3ff}
+h1{font-size:clamp(27px,4vw,43px);line-height:1.1;margin:20px 0 12px;max-width:850px;letter-spacing:-.035em}header p{max-width:780px;color:#d7e6f5;margin:0}.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.hero-meta span{background:#ffffff14;border:1px solid #ffffff22;border-radius:9px;padding:7px 11px;font-size:12px}
+.layout{max-width:1200px;margin:26px auto;padding:0 18px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:22px}.sidebar{align-self:start;position:sticky;top:15px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:13px;box-shadow:var(--shadow)}.sidebar strong{display:block;padding:8px 10px 12px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}.sidebar a{display:block;text-decoration:none;color:#344054;padding:9px 10px;border-radius:9px;font-size:13px}.sidebar a:hover{background:#eef4ff;color:var(--blue)}
+main{min-width:0}.section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:23px;margin-bottom:19px;box-shadow:var(--shadow);scroll-margin-top:18px}.section h2{font-size:21px;margin:0 0 5px;letter-spacing:-.02em}.lead{color:var(--muted);margin:0 0 18px;font-size:13px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:800;margin-bottom:5px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.stat{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fbfcfe}.stat small{color:var(--muted);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em}.stat strong{font-size:22px;display:block;margin-top:5px;letter-spacing:-.03em}.stat span{font-size:12px;color:var(--muted)}
+.callout{background:#eff6ff;border-left:4px solid var(--blue);padding:13px 15px;border-radius:8px;color:#24436e;font-size:13px;margin:14px 0}.callout.warn{background:#fff8e8;border-color:var(--amber);color:#75521b}.callout.good{background:#ecfdf3;border-color:var(--green);color:#176344}
+label{font-size:12px;color:#475467;font-weight:700;display:block;margin-bottom:5px}input,select,textarea{font:inherit;color:var(--ink);border:1px solid #d5dce7;border-radius:8px;padding:8px 9px;background:white;max-width:100%}input:focus,select:focus{outline:2px solid #bfdbfe;border-color:var(--blue)}input[type=number]{width:100%;min-width:65px}.field{margin-bottom:12px}.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.btn{border:0;border-radius:9px;padding:10px 15px;background:var(--blue);color:white;font-weight:750;cursor:pointer;font-size:13px}.btn:hover{filter:brightness(.94)}.btn.secondary{background:#eaf0f8;color:#253653}.btn.dark{background:var(--navy)}.btn.green{background:var(--green)}.btn.small{padding:7px 10px;font-size:12px}.scenario{border:1px solid var(--line);border-radius:13px;padding:14px}.scenario h3{font-size:15px;margin:0 0 5px}.scenario p{font-size:12px;color:var(--muted);margin:0 0 11px}.scenario.active{border-color:#7aa7f9;background:#f6f9ff}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0 3px}th,td{border-bottom:1px solid var(--line);padding:8px;text-align:right;white-space:nowrap}th{background:#f7f9fc;color:#475467;font-size:11px}th:first-child,td:first-child{text-align:left}td input{width:78px;padding:6px;text-align:right;font-size:12px}.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.matrix-title{font-size:13px;font-weight:800;margin-bottom:7px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.kv span{color:var(--muted)}.pill{display:inline-block;padding:3px 8px;border-radius:99px;background:#eef2ff;color:#3449a1;font-size:11px;font-weight:800}.status{font-weight:800}.ok{color:var(--green)}.bad{color:var(--red)}
+.chart{width:100%;height:240px;display:block;background:#fbfcfe;border:1px solid var(--line);border-radius:11px}
+.note{font-size:12px;color:var(--muted)}.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f6f8fb;border:1px solid var(--line);padding:11px;border-radius:9px;overflow-x:auto;font-size:12px}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow-x:auto;gap:2px}.sidebar strong{display:none}.sidebar a{white-space:nowrap}.grid-3{grid-template-columns:1fr}.matrix-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.section{padding:16px}.grid{grid-template-columns:1fr}header{padding:26px 18px}.layout{padding:0 11px;margin-top:14px}}
+</style>
+</head>
+<body>
+<header id="inicio">
+ <div class="topline"><div class="brand">Métodos numéricos · Proyecto académico</div><div class="tag">Simulador interactivo · GCP</div></div>
+ <h1>Finanzas Inteligentes: distribución óptima de recursos empresariales</h1>
+ <p>Modelo numérico para analizar la asignación de recursos entre cuatro áreas de una empresa y comparar Gradientes Conjugados (GC) con Gradientes Conjugados Precondicionado (GCP) en tres escenarios financieros.</p>
+ <div class="hero-meta"><span>UMSA · Carrera de Informática</span><span>Estudiante: <b id="studentHeader">Najib Brayan Huaricona Laurel</b></span><span>Tolerancia: 10⁻⁶</span></div>
+</header>
+<div class="layout">
+<nav class="sidebar">
+ <strong>Contenido del simulador</strong>
+ <a href="#inicio">01 · Inicio</a><a href="#caso">02 · Caso de estudio</a><a href="#formulacion">03 · Formulación</a><a href="#datos">04 · Entrada de datos</a><a href="#escenarios">05 · Escenarios</a><a href="#referencia">06 · Solución directa</a><a href="#comparacion">07 · GCP vs GC</a><a href="#errores">08 · Errores y condición</a><a href="#qa">09 · Pruebas QA</a><a href="#conclusiones">10 · Conclusiones</a>
+</nav>
+<main>
+<section class="section" id="caso">
+ <div class="eyebrow">02 · Contexto financiero</div><h2>Un presupuesto que debe trabajar en conjunto</h2>
+ <p class="lead">Caso académico hipotético: empresa boliviana de servicios que debe distribuir recursos entre cuatro unidades interdependientes.</p>
+ <div class="grid-3">
+  <div class="stat"><small>Marketing</small><strong>Área 1</strong><span>Captación de clientes</span></div>
+  <div class="stat"><small>Tecnología</small><strong>Área 2</strong><span>Infraestructura digital</span></div>
+  <div class="stat"><small>Operaciones</small><strong>Área 3</strong><span>Prestación del servicio</span></div>
+ </div>
+ <div class="stat" style="margin-top:13px"><small>Recursos humanos · Área 4</small><strong>Personal y capacitación</strong><span>Formación, salarios y soporte interno</span></div>
+ <p>Las incógnitas representan niveles de asignación presupuestaria equivalentes, expresados en <b>unidades presupuestarias (UP)</b>. El modelo lineal representa un equilibrio de planificación: los términos diagonales expresan la resistencia o prioridad propia de cada área y los términos fuera de la diagonal representan interdependencias entre áreas. El vector b representa las necesidades netas planificadas.</p>
+ <div class="callout"><b>Alcance y honestidad de los datos:</b> los coeficientes y necesidades de esta demostración son datos sintéticos creados con fines académicos; no representan estados financieros reales de una empresa. El modelo permite demostrar el método numérico y su sensibilidad.</div>
+ <div class="kv"><span>Objetivo</span><b>Calcular la asignación x que satisface Ax = b</b></div>
+ <div class="kv"><span>Unidades</span><b>UP (unidades presupuestarias)</b></div>
+ <div class="kv"><span>Variables</span><b>x₁, x₂, x₃, x₄</b></div>
+</section>
+
+<section class="section" id="formulacion">
+ <div class="eyebrow">03 · Modelo matemático</div><h2>Variables, sistema y propiedades</h2><p class="lead">El mismo significado de las variables se conserva en los tres escenarios.</p>
+ <div class="tablewrap"><table><thead><tr><th>Variable</th><th>Área financiera</th><th>Interpretación</th></tr></thead><tbody>
+ <tr><td>x₁</td><td>Marketing</td><td>Nivel de recursos asignados (UP)</td></tr><tr><td>x₂</td><td>Tecnología</td><td>Nivel de recursos asignados (UP)</td></tr><tr><td>x₃</td><td>Operaciones</td><td>Nivel de recursos asignados (UP)</td></tr><tr><td>x₄</td><td>Recursos humanos</td><td>Nivel de recursos asignados (UP)</td></tr>
+ </tbody></table></div>
+ <p>La formulación general es:</p><div class="formula">A x = b, &nbsp; A = Aᵀ, &nbsp; xᵀAx &gt; 0 para todo x ≠ 0</div>
+ <p>La matriz debe ser cuadrada, simétrica y definida positiva (SPD). Se verifica la simetría y se aplica el criterio de Sylvester: una matriz simétrica es definida positiva si todos sus menores principales líderes son positivos. También se comprueba mediante la factorización de Cholesky. Ambas validaciones se vuelven a ejecutar al editar los datos.</p><div class="formula" id="spdInfo">Los menores principales líderes se mostrarán después del cálculo.</div>
+ <div class="callout warn">Los coeficientes fuera de la diagonal describen interdependencia matemática entre áreas; no son porcentajes ni montos monetarios directos. La interpretación financiera es la de un modelo lineal simplificado de equilibrio presupuestario.</div>
+</section>
+
+<section class="section" id="datos">
+ <div class="eyebrow">04 · Entrada de datos</div><h2>Editor de la matriz A y del vector b</h2><p class="lead">Puedes modificar cada coeficiente. Al ejecutar, el sistema valida la matriz y recalcula los resultados.</p>
+ <div class="matrix-grid">
+  <div><div class="matrix-title">Matriz A (4 × 4)</div><div class="tablewrap" id="matrixA"></div></div>
+  <div><div class="matrix-title">Vector b</div><div class="tablewrap" id="vectorB"></div>
+   <div class="field" style="margin-top:13px"><label for="x0mode">Vector inicial</label><select id="x0mode"><option value="zero">x₀ = (0, 0, 0, 0)</option><option value="one">x₀ = (1, 1, 1, 1)</option></select></div>
+   <div class="field"><label for="tol">Tolerancia (relativa)</label><input id="tol" type="number" min="0.000000001" max="0.01" step="any" value="0.000001"></div>
+   <div class="field"><label for="preconditioner">Precondicionador GCP</label><select id="preconditioner"><option value="jacobi">Jacobi (diagonal)</option><option value="none">Identidad (sin precondicionar)</option></select></div>
+   <div class="field"><label for="maxIter">Iteraciones máximas</label><input id="maxIter" type="number" min="4" max="5000" value="500"></div>
+  </div>
+ </div>
+ <div class="btnrow"><button class="btn" onclick="runAll()">Calcular y actualizar todo</button><button class="btn secondary" onclick="loadScenario(currentScenario)">Restaurar escenario seleccionado</button><button class="btn secondary" onclick="downloadCSV()">Descargar resultados CSV</button></div>
+ <div id="validation" class="callout">Selecciona un escenario o edita los valores y pulsa “Calcular y actualizar todo”.</div>
+</section>
+
+<section class="section" id="escenarios">
+ <div class="eyebrow">05 · Tres escenarios obligatorios</div><h2>Explora las condiciones financieras</h2><p class="lead">Los escenarios conservan las cuatro áreas; cambian los términos independientes o la escala de las relaciones.</p>
+ <div class="grid-3">
+  <div class="scenario" id="card-ideal"><h3>01 · Ideal</h3><p>Operación estable y matriz bien condicionada. Necesidades planificadas sin perturbaciones.</p><button class="btn small" onclick="loadScenario('ideal')">Cargar ideal</button></div>
+  <div class="scenario" id="card-stress"><h3>02 · Bajo estrés</h3><p>Aumento de costos y presión sobre necesidades de tecnología y operaciones. Se modifica b.</p><button class="btn small" onclick="loadScenario('stress')">Cargar estrés</button></div>
+  <div class="scenario" id="card-bad"><h3>03 · Mal condicionado</h3><p>Escalas muy distintas entre áreas. Se utiliza Jacobi para reducir el efecto del escalamiento diagonal.</p><button class="btn small" onclick="loadScenario('bad')">Cargar mal condicionado</button></div>
+ </div>
+ <div class="callout" id="scenarioDescription"></div>
+</section>
+
+<section class="section" id="referencia">
+ <div class="eyebrow">06 · Solución numérica de referencia</div><h2>Método directo: factorización de Cholesky</h2><p class="lead">Para una matriz simétrica definida positiva, A = LLᵀ. Se resuelve primero Ly = b y después Lᵀx = y.</p>
+ <div id="directResult" class="note">Ejecuta un escenario para ver la solución.</div>
+ <div class="formula" id="choleskyInfo">La factorización se mostrará después del cálculo.</div>
+</section>
+
+<section class="section" id="comparacion">
+ <div class="eyebrow">07 · Comparación de algoritmos</div><h2>Gradientes Conjugados frente a GCP</h2><p class="lead">Ambos métodos parten del mismo x₀ y usan el criterio ||rₖ||₂ / ||b||₂ &lt; tolerancia.</p>
+ <div class="grid">
+  <div class="stat"><small>Iteraciones GC</small><strong id="gcIter">—</strong><span id="gcStatus">Pendiente</span></div>
+  <div class="stat"><small>Iteraciones GCP</small><strong id="pcgIter">—</strong><span id="pcgStatus">Pendiente</span></div>
+ </div>
+ <div class="tablewrap" style="margin-top:14px"><table id="solutionTable"><thead><tr><th>Variable</th><th>Referencia</th><th>GC</th><th>GCP</th></tr></thead><tbody></tbody></table></div>
+ <div class="grid" style="margin-top:15px"><div><label>Norma del residuo relativo por método</label><canvas id="residualChart" class="chart" width="700" height="240"></canvas></div><div><label>Comparación de asignaciones (UP)</label><canvas id="solutionChart" class="chart" width="700" height="240"></canvas></div></div>
+ <div id="algorithmNotes" class="callout">Los resultados aparecerán al ejecutar.</div>
+</section>
+
+<section class="section" id="errores">
+ <div class="eyebrow">08 · Errores y condicionamiento</div><h2>Precisión, residuo y número de condición</h2><p class="lead">Los errores se calculan respecto a la solución directa de referencia.</p>
+ <div class="tablewrap"><table id="errorTable"><thead><tr><th>Variable</th><th>Error abs. GC</th><th>Error rel. GC</th><th>Error % GC</th><th>Error abs. GCP</th><th>Error rel. GCP</th><th>Error % GCP</th></tr></thead><tbody></tbody></table></div>
+ <div class="grid" style="margin-top:14px">
+  <div class="stat"><small>Residuo relativo GC</small><strong id="gcResidual">—</strong></div>
+  <div class="stat"><small>Residuo relativo GCP</small><strong id="pcgResidual">—</strong></div>
+  <div class="stat"><small>Condición κ₂(A)</small><strong id="condA">—</strong></div>
+  <div class="stat"><small>Condición precondicionada</small><strong id="condM">—</strong><span>κ₂(D⁻¹/² A D⁻¹/²), forma simétrica de Jacobi</span></div>
+ </div>
+ <div class="callout" id="conditionInterpretation">La interpretación del condicionamiento aparecerá aquí.</div>
+ <p class="note">Para matrices SPD, κ₂(A) = λmáx/λmín. Con Jacobi se informa κ₂(D⁻¹/² A D⁻¹/²). Esta matriz es simétrica y tiene los mismos autovalores que D⁻¹A; por ello se evita presentar directamente D⁻¹A como si fuera simétrica.</p>
+</section>
+
+<section class="section" id="qa">
+ <div class="eyebrow">09 · Aseguramiento de calidad</div><h2>Módulo de pruebas QA</h2><p class="lead">Ejecuta las cuatro pruebas exigidas. Cada resultado se registra con entrada, esperado, obtenido y conclusión.</p>
+ <div class="btnrow"><button class="btn green" onclick="runQA()">Ejecutar las cuatro pruebas QA</button></div>
+ <div class="tablewrap"><table id="qaTable"><thead><tr><th>Prueba</th><th>Entrada</th><th>Resultado esperado</th><th>Resultado obtenido</th><th>Conclusión</th></tr></thead><tbody><tr><td colspan="5" style="text-align:center;color:#667085">Aún no se ejecutaron las pruebas.</td></tr></tbody></table></div>
+ <div class="note" id="qaSummary">Las pruebas verifican el comportamiento de esta versión del simulador en el navegador.</div>
+</section>
+
+<section class="section" id="conclusiones">
+ <div class="eyebrow">10 · Conclusiones y referencias</div><h2>Interpretación y guía de uso</h2>
+ <div id="conclusionText">Ejecuta los escenarios para generar conclusiones basadas en los resultados calculados.</div>
+ <h3 style="font-size:15px;margin-top:20px">Cómo utilizar el simulador</h3>
+ <ol class="note"><li>Selecciona Ideal, Bajo estrés o Mal condicionado.</li><li>Revisa A y b; si deseas, edita sus valores.</li><li>Configura x₀, tolerancia y precondicionador.</li><li>Pulsa “Calcular y actualizar todo”.</li><li>Revisa la solución directa, GC, GCP, errores, condicionamiento y gráficos.</li><li>Ejecuta las pruebas QA y descarga los resultados CSV si lo necesitas.</li></ol>
+ <h3 style="font-size:15px;margin-top:20px">Referencias bibliográficas</h3>
+ <ul class="note"><li>Suñagua S., P. (2020). <i>Método de Gradientes Conjugados Precondicionado</i>. Revista Boliviana de Matemática – UMSA, 04, 2–7.</li><li>Golub, G. H., &amp; Van Loan, C. F. (2013). <i>Matrix Computations</i> (4th ed.). Johns Hopkins University Press.</li><li>Saad, Y. (2003). <i>Iterative Methods for Sparse Linear Systems</i> (2nd ed.). SIAM.</li></ul>
+ <div class="callout good">Proyecto académico demostrativo. Los datos financieros son sintéticos y se pueden editar para experimentar con el método.</div>
+</section>
+</main>
+</div>
+<footer>Finanzas Inteligentes · Simulador académico de Gradientes Conjugados Precondicionado · UMSA</footer>
+
+<script>
+"use strict";
+const scenarios={
+ ideal:{A:[[10,-1,0,0],[-1,9,-1,0],[0,-1,8,-1],[0,0,-1,7]],b:[80,65,55,40],desc:"Escenario ideal: matriz simétrica, diagonal dominante y bien condicionada. Representa una planificación estable con necesidades moderadas."},
+ stress:{A:[[10,-1,0,0],[-1,9,-1,0],[0,-1,8,-1],[0,0,-1,7]],b:[65,78,82,34],desc:"Bajo estrés: se mantiene la estructura de interdependencia y cambian las necesidades netas b. Se simulan presión de costos, mayor demanda tecnológica y operativa y ajuste de recursos humanos."},
+ bad:{A:[[1,0.18,0.08,0.04],[0.18,100,12,5],[0.08,12,10000,180],[0.04,5,180,1000000]],b:[8,650,5500,42000],desc:"Mal condicionado por escalamiento diagonal: las magnitudes propias de las áreas difieren ampliamente. Jacobi usa la diagonal de A como precondicionador. La matriz se construyó como SPD y debe validarse antes de resolver."}
+};
+let currentScenario="ideal", lastResults=null;
+const $=id=>document.getElementById(id);
+const AREA_NAMES=["Marketing","Tecnología","Operaciones","Recursos humanos"];
+const DEFAULT_TOL=1e-6;
+function fmt(v,d=7){if(!Number.isFinite(v))return "—";return Number(v).toExponential(d>5?3:2)}
+function fmtFixed(v,d=6){return Number.isFinite(v)?v.toFixed(d):"—"}
+function norm(v){return Math.sqrt(dot(v,v))}
+function dot(a,b){return a.reduce((s,x,i)=>s+x*b[i],0)}
+function matVec(A,x){return A.map(row=>dot(row,x))}
+function transpose(A){return A[0].map((_,j)=>A.map(r=>r[j]))}
+function clone(A){return A.map(r=>r.slice())}
+function getData(){const A=Array.from({length:4},(_,i)=>Array.from({length:4},(_,j)=>Number($(`a${i}${j}`).value)));const b=Array.from({length:4},(_,i)=>Number($(`b${i}`).value));return {A,b}}
+function renderEditor(A,b){
+ $("matrixA").innerHTML=`<table><thead><tr><th>A</th>${[1,2,3,4].map(i=>`<th>x${i}</th>`).join("")}</tr></thead><tbody>${A.map((row,i)=>`<tr><td>Fila ${i+1}</td>${row.map((v,j)=>`<td><input aria-label="A ${i+1},${j+1}" id="a${i}${j}" type="number" step="any" value="${v}"></td>`).join("")}</tr>`).join("")}</tbody></table>`;
+ $("vectorB").innerHTML=`<table><thead><tr><th>Variable</th><th>b</th></tr></thead><tbody>${b.map((v,i)=>`<tr><td>Fila ${i+1}</td><td><input aria-label="b ${i+1}" id="b${i}" type="number" step="any" value="${v}"></td></tr>`).join("")}</tbody></table>`;
+}
+function loadScenario(name){
+ currentScenario=name;const s=scenarios[name];renderEditor(clone(s.A),s.b.slice());
+ ["ideal","stress","bad"].forEach(k=>$(`card-${k}`).classList.toggle("active",k===name));
+ $("scenarioDescription").textContent=s.desc;
+ runAll();
+}
+function cholesky(A){
+ const n=A.length,L=Array.from({length:n},()=>Array(n).fill(0));
+ const scale=Math.max(...A.flat().map(Math.abs),Number.MIN_VALUE);
+ const pivotTol=Number.EPSILON*scale*n*10;
+ for(let i=0;i<n;i++)for(let j=0;j<=i;j++){
+  let sum=A[i][j];for(let k=0;k<j;k++)sum-=L[i][k]*L[j][k];
+  if(i===j){if(!(sum>pivotTol)||!Number.isFinite(sum))throw Error(`La matriz no es definida positiva: pivote ${i+1} no supera la tolerancia numérica (${pivotTol.toExponential(2)}).`);L[i][j]=Math.sqrt(sum)}
+  else L[i][j]=sum/L[j][j];
+ }
+ return L;
+}
+function leadingPrincipalMinors(A){
+ const minors=[];
+ for(let k=1;k<=A.length;k++){
+  const sub=A.slice(0,k).map(row=>row.slice(0,k));
+  minors.push(determinant(sub));
+ }
+ return minors;
+}
+function determinant(input){
+ const A=clone(input),n=A.length;let det=1;
+ for(let k=0;k<n;k++){
+  let pivot=k;for(let i=k+1;i<n;i++)if(Math.abs(A[i][k])>Math.abs(A[pivot][k]))pivot=i;
+  if(Math.abs(A[pivot][k])<Number.EPSILON)return 0;
+  if(pivot!==k){[A[pivot],A[k]]=[A[k],A[pivot]];det*=-1;}
+  const value=A[k][k];det*=value;
+  for(let i=k+1;i<n;i++){const factor=A[i][k]/value;for(let j=k+1;j<n;j++)A[i][j]-=factor*A[k][j];}
+ }
+ return det;
+}
+function solveCholesky(A,b){
+ const L=cholesky(A),n=b.length,y=Array(n).fill(0),x=Array(n).fill(0);
+ for(let i=0;i<n;i++){let s=b[i];for(let j=0;j<i;j++)s-=L[i][j]*y[j];y[i]=s/L[i][i]}
+ for(let i=n-1;i>=0;i--){let s=y[i];for(let j=i+1;j<n;j++)s-=L[j][i]*x[j];x[i]=s/L[i][i]}
+ return {x,L};
+}
+function validate(A,b){
+ if(A.length!==4||A.some(r=>r.length!==4)||b.length!==4)throw Error("El sistema debe ser de 4 × 4.");
+ if(A.flat().some(v=>!Number.isFinite(v))||b.some(v=>!Number.isFinite(v)))throw Error("Todos los datos deben ser números finitos.");
+ for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)if(Math.abs(A[i][j]-A[j][i])>1e-10)return {valid:false,message:`La matriz no es simétrica: A[${i+1},${j+1}] ≠ A[${j+1},${i+1}].`};
+ const minors=leadingPrincipalMinors(A);
+ if(minors.some(v=>!(v>0)||!Number.isFinite(v)))return {valid:false,message:"La matriz no cumple el criterio de Sylvester: al menos un menor principal líder no es positivo.",minors};
+ const L=cholesky(A);return {valid:true,message:"Matriz simétrica y definida positiva: cumple Sylvester y la factorización de Cholesky.",L,minors};
+}
+function cg(A,b,x0,tol,maxIter,Mdiag=null){
+ const n=b.length,x=x0.slice(),hist=[];let r=b.map((v,i)=>v-matVec(A,x)[i]);
+ const bnorm=norm(b)||1;let z=Mdiag?r.map((v,i)=>v/Mdiag[i]):r.slice(),p=z.slice(),rz=dot(r,z),rel=norm(r)/bnorm;
+ hist.push(rel);let k=0;
+ if(rel<=tol)return {x,iterations:0,residual:rel,converged:true,history:hist};
+ while(rel>tol&&k<maxIter){
+  const Ap=matVec(A,p),den=dot(p,Ap);if(!(den>0)||!Number.isFinite(den))break;
+  const alpha=rz/den;
+  for(let i=0;i<n;i++){x[i]+=alpha*p[i];r[i]-=alpha*Ap[i]}
+  rel=norm(r)/bnorm;hist.push(rel);k++;if(rel<=tol)break;
+  z=Mdiag?r.map((v,i)=>v/Mdiag[i]):r.slice();
+  const rzNew=dot(r,z);if(!Number.isFinite(rzNew)||Math.abs(rz)<1e-30)break;
+  const beta=rzNew/rz;p=z.map((v,i)=>v+beta*p[i]);rz=rzNew;
+ }
+ return {x,iterations:k,residual:rel,converged:rel<=tol,history:hist};
+}
+function eigenvaluesSymmetric(input){
+ const A=clone(input),n=A.length,max=200*n*n;
+ const scale=Math.max(...A.flat().map(Math.abs),1);
+ for(let iter=0;iter<max;iter++){
+  let p=0,q=1,big=0;
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)if(Math.abs(A[i][j])>big){big=Math.abs(A[i][j]);p=i;q=j}
+  if(big<Number.EPSILON*scale*20)break;
+  const tau=(A[q][q]-A[p][p])/(2*A[p][q]),t=(tau>=0?1:-1)/(Math.abs(tau)+Math.sqrt(1+tau*tau)),c=1/Math.sqrt(1+t*t),s=t*c;
+  const app=A[p][p],aqq=A[q][q],apq=A[p][q];
+  A[p][p]=app-t*apq;A[q][q]=aqq+t*apq;A[p][q]=A[q][p]=0;
+  for(let k=0;k<n;k++)if(k!==p&&k!==q){const akp=A[k][p],akq=A[k][q];A[k][p]=A[p][k]=c*akp-s*akq;A[k][q]=A[q][k]=s*akp+c*akq}
+ }
+ return A.map((r,i)=>r[i]).sort((a,b)=>a-b);
+}
+function conditionNumber(A){
+ const ev=eigenvaluesSymmetric(A);if(ev[0]<=0)return Infinity;return ev[ev.length-1]/ev[0];
+}
+function symPreconditioned(A,d){
+ const B=A.map((row,i)=>row.map((v,j)=>v/Math.sqrt(d[i]*d[j])));return B;
+}
+function matrixText(L){return "L (factor de Cholesky):\n"+L.map(r=>"[ "+r.map(v=>v.toPrecision(5)).join("   ")+" ]").join("\n")}
+function clearResults(message="Los resultados están pendientes de un nuevo cálculo válido."){
+ lastResults=null;
+ ["gcIter","pcgIter","gcResidual","pcgResidual","condA","condM"].forEach(id=>$(id).textContent="—");
+ ["gcStatus","pcgStatus"].forEach(id=>$(id).textContent="Pendiente");
+ $("directResult").textContent=message;
+ $("choleskyInfo").textContent="La factorización se mostrará después de un cálculo válido.";
+ $("spdInfo").textContent="Los menores principales líderes se mostrarán después de un cálculo válido.";
+ $("solutionTable").querySelector("tbody").innerHTML="";
+ $("errorTable").querySelector("tbody").innerHTML="";
+ $("algorithmNotes").textContent="Ejecuta un cálculo válido para comparar los métodos.";
+ $("conditionInterpretation").textContent="El análisis del condicionamiento aparecerá después del cálculo.";
+ $("conclusionText").textContent="No hay resultados vigentes. Corrige los datos y vuelve a calcular.";
+ drawResidual([],[]);drawSolutions([0,0,0,0],[0,0,0,0],[0,0,0,0]);
+}
+function runAll(){
+ try{
+  const {A,b}=getData(),tol=Number($("tol").value),maxIter=Math.floor(Number($("maxIter").value));
+  if(!(tol>0&&tol<1)||!Number.isFinite(tol))throw Error("La tolerancia debe ser mayor que 0 y menor que 1.");
+  if(!(maxIter>=1&&maxIter<=5000))throw Error("El máximo de iteraciones debe estar entre 1 y 5000.");
+  const check=validate(A,b);if(!check.valid)throw Error(check.message);
+  const x0=$("x0mode").value==="one"?[1,1,1,1]:[0,0,0,0];
+  const direct=solveCholesky(A,b),gc=cg(A,b,x0,tol,maxIter),diag=A.map((r,i)=>r[i]);
+  if(diag.some(v=>v<=0))throw Error("Jacobi requiere elementos diagonales positivos.");
+  const M=$("preconditioner").value==="jacobi"?diag:null,pcg=cg(A,b,x0,tol,maxIter,M);
+  const kA=conditionNumber(A),kM=conditionNumber(M?symPreconditioned(A,diag):A);
+  const minors=check.minors;
+  lastResults={A:clone(A),b:b.slice(),direct,gc,pcg,kA,kM,tol,scenario:currentScenario,preconditioner:$("preconditioner").value,maxIter};
+  $("validation").innerHTML=`<span class="status ok">✓ ${check.message}</span>`;
+  $("directResult").innerHTML=`<div class="grid">${direct.x.map((v,i)=>`<div class="kv"><span>x${i+1} · ${["Marketing","Tecnología","Operaciones","Recursos humanos"][i]}</span><b>${v.toFixed(8)} UP</b></div>`).join("")}</div><p class="note">Solución obtenida resolviendo Ly = b y Lᵀx = y. Esta es la solución numérica de referencia.</p>`;
+  $("choleskyInfo").textContent=matrixText(check.L);
+  $("spdInfo").textContent="Criterio de Sylvester (menores principales líderes): "+minors.map((v,i)=>`Δ${i+1} = ${v.toExponential(6)}`).join("; ")+". Todos son positivos; por tanto, A es definida positiva.";
+  $("gcIter").textContent=gc.iterations;$("pcgIter").textContent=pcg.iterations;
+  $("gcStatus").innerHTML=gc.converged?'<span class="ok">Convergió</span>': '<span class="bad">No alcanzó tolerancia</span>';
+  $("pcgStatus").innerHTML=pcg.converged?'<span class="ok">Convergió</span>':'<span class="bad">No alcanzó tolerancia</span>';
+  $("solutionTable").querySelector("tbody").innerHTML=direct.x.map((v,i)=>`<tr><td>x${i+1}</td><td>${v.toPrecision(9)}</td><td>${gc.x[i].toPrecision(9)}</td><td>${pcg.x[i].toPrecision(9)}</td></tr>`).join("");
+  const errRows=direct.x.map((v,i)=>{const e1=Math.abs(v-gc.x[i]),e2=Math.abs(v-pcg.x[i]),r1=v===0?null:e1/Math.abs(v),r2=v===0?null:e2/Math.abs(v);return `<tr><td>x${i+1}</td><td>${fmt(e1)}</td><td>${r1===null?"No definido":fmt(r1)}</td><td>${r1===null?"No definido":fmt(r1*100,3)+"%"}</td><td>${fmt(e2)}</td><td>${r2===null?"No definido":fmt(r2)}</td><td>${r2===null?"No definido":fmt(r2*100,3)+"%"}</td></tr>`}).join("");
+  $("errorTable").querySelector("tbody").innerHTML=errRows;
+  $("gcResidual").textContent=fmt(gc.residual);$("pcgResidual").textContent=fmt(pcg.residual);$("condA").textContent=fmt(kA,3);$("condM").textContent=fmt(kM,3);
+  $("conditionInterpretation").textContent=`κ₂(A) = ${kA.toPrecision(6)}. κ₂(D⁻¹/² A D⁻¹/²) = ${kM.toPrecision(6)}. ${$("preconditioner").value==="jacobi"?(kM<kA?"Jacobi reduce el condicionamiento espectral de la forma simétrica y mejora el escalamiento.":"Jacobi no reduce el condicionamiento espectral para esta matriz."):"Se seleccionó identidad; por tanto, no se aplica escalamiento Jacobi."}`;
+  $("algorithmNotes").textContent=`GC: ${gc.iterations} iteraciones, residuo relativo ${gc.residual.toExponential(3)}. GCP: ${pcg.iterations} iteraciones, residuo relativo ${pcg.residual.toExponential(3)}. Criterio: residuo relativo < ${tol}.`;
+  $("conclusionText").innerHTML=`<p>En el escenario <b>${{ideal:"ideal",stress:"bajo estrés financiero",bad:"mal condicionado"}[currentScenario]}</b>, la solución de referencia es (${direct.x.map(v=>v.toFixed(4)).join(", ")}) UP. El algoritmo GC ${gc.converged?"alcanzó":"no alcanzó"} la tolerancia en ${gc.iterations} iteraciones y GCP ${pcg.converged?"alcanzó":"no alcanzó"} la tolerancia en ${pcg.iterations} iteraciones.</p><p>El número de condición de A es ${kA.toPrecision(4)} y el de la matriz precondicionada es ${kM.toPrecision(4)}. ${kM<kA?"La reducción indica que Jacobi mejora el escalamiento del sistema.":"No se observa reducción del condicionamiento con el precondicionador seleccionado."} La asignación calculada es un resultado del modelo sintético y no debe interpretarse como recomendación financiera real.</p>`;
+  drawResidual(gc.history,pcg.history);drawSolutions(direct.x,gc.x,pcg.x);
+ }catch(e){clearResults("No se puede calcular: corrige los datos y vuelve a ejecutar.");$("validation").innerHTML=`<span class="status bad">✕ ${e.message}</span>`;}
+}
+function drawResidual(h1,h2){
+ const c=$("residualChart"),ctx=c.getContext("2d"),w=c.width,h=c.height;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle="#fbfcfe";ctx.fillRect(0,0,w,h);
+ const all=h1.concat(h2).filter(v=>Number.isFinite(v)&&v>0);
+ if(!all.length){ctx.fillStyle="#667085";ctx.font="13px sans-serif";ctx.fillText("Sin datos para graficar",w/2-65,h/2);return;}
+ const lo=Math.min(-16,...all.map(v=>Math.log10(v))),hi=Math.max(-6,...all.map(v=>Math.log10(v)));
+ const maxIter=Math.max(h1.length,h2.length)-1, left=55,right=18,top=22,bottom=42;
+ const X=k=>left+(k/Math.max(1,maxIter))*(w-left-right);
+ const Y=v=>top+(hi-Math.log10(Math.max(v,1e-16)))*(h-top-bottom)/(hi-lo||1);
+ ctx.strokeStyle="#dce3ed";ctx.fillStyle="#667085";ctx.font="11px sans-serif";
+ for(let i=0;i<5;i++){const y=top+i*(h-top-bottom)/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillText((hi-(hi-lo)*i/4).toFixed(1),5,y+4);}
+ for(let i=0;i<=maxIter;i++){if(maxIter>12&&i%Math.ceil(maxIter/6)!==0&&i!==maxIter)continue;const x=X(i);ctx.fillText(String(i),x-3,h-24);}
+ function line(arr,color){if(!arr.length)return;ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.beginPath();arr.forEach((v,i)=>{const x=X(i),y=Y(v);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke();}
+ line(h1,"#2563eb");line(h2,"#0891b2");ctx.fillStyle="#2563eb";ctx.fillText("GC",left,h-7);ctx.fillStyle="#0891b2";ctx.fillText("GCP",left+45,h-7);ctx.fillStyle="#667085";ctx.fillText("Iteraciones →",w-112,h-7);
+}
+function drawSolutions(ref,gc,pcg){
+ const c=$("solutionChart"),ctx=c.getContext("2d"),w=c.width,h=c.height;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle="#fbfcfe";ctx.fillRect(0,0,w,h);
+ const values=[...ref,...gc,...pcg],maxAbs=Math.max(1,...values.map(Math.abs))*1.12;
+ const left=42,right=12,top=30,bottom=42,zeroY=top+(maxAbs/(2*maxAbs))*(h-top-bottom),scale=(h-top-bottom)/(2*maxAbs);
+ const y=v=>zeroY-v*scale;
+ ctx.strokeStyle="#98a2b3";ctx.beginPath();ctx.moveTo(left,zeroY);ctx.lineTo(w-right,zeroY);ctx.stroke();
+ const colors=["#14233f","#2563eb","#0891b2"],sets=[ref,gc,pcg];
+ for(let i=0;i<4;i++){const groupX=70+i*155;sets.forEach((arr,j)=>{const bw=25,x=groupX+j*30,yy=y(arr[i]);ctx.fillStyle=colors[j];ctx.fillRect(x,Math.min(yy,zeroY),bw,Math.max(1,Math.abs(zeroY-yy)));});ctx.fillStyle="#475467";ctx.font="12px sans-serif";ctx.fillText("x"+(i+1),groupX+20,h-13);}
+ ctx.fillStyle=colors[0];ctx.fillText("Referencia",45,16);ctx.fillStyle=colors[1];ctx.fillText("GC",150,16);ctx.fillStyle=colors[2];ctx.fillText("GCP",200,16);
+}
+function runQA(){
+ const rows=[];let passed=0;
+ function add(name,input,expected,obtained,ok){if(ok)passed++;rows.push(`<tr><td>${name}</td><td>${input}</td><td>${expected}</td><td>${obtained}</td><td class="${ok?"ok":"bad"}">${ok?"APROBADA":"REVISAR"}</td></tr>`)}
+ try{const s=scenarios.ideal;const r=validate(s.A,s.b);add("Carga de escenarios","Ideal, estrés y mal condicionado","Los tres modelos SPD deben cargarse",["ideal","stress","bad"].every(k=>validate(scenarios[k].A,scenarios[k].b).valid)?"Los tres escenarios cargan y son SPD":"Algún escenario no válido",["ideal","stress","bad"].every(k=>validate(scenarios[k].A,scenarios[k].b).valid))}
+ catch(e){add("Carga de escenarios","Matrices predefinidas","Los tres escenarios deben ser válidos",e.message,false)}
+ const invalid=[[1,2,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]];
+ let caught=false,msg="No se detectó";
+ try{validate(invalid,[1,1,1,1])}catch(e){caught=true;msg=e.message}
+ if(!caught){const v=validate(invalid,[1,1,1,1]);caught=!v.valid;msg=v.message}
+ add("Matriz no válida","Matriz no simétrica","Mostrar aviso y no resolver",msg,caught);
+ let dynamicOK=false,dynamicMsg="No se pudo ejecutar la prueba";
+ try{
+  const oldB=Number($("b0").value),oldScenario=currentScenario;
+  const before=lastResults?lastResults.direct.x.slice():solveCholesky(getData().A,getData().b).x;
+  $("b0").value=String(oldB+5);runAll();
+  const after=lastResults?lastResults.direct.x.slice():[];
+  const change=after.length?norm(before.map((v,i)=>v-after[i])):0;
+  dynamicOK=change>1e-8;dynamicMsg=`Cambio real en el editor: ||Δx||₂ = ${change.toExponential(3)}`;
+  $("b0").value=String(oldB);runAll();
+  if(currentScenario!==oldScenario)loadScenario(oldScenario);
+ }catch(e){dynamicMsg=e.message;}
+ add("Edición dinámica","Se modificó el campo real b₁ en +5 y se recalculó","La interfaz debe actualizar la solución",dynamicMsg,dynamicOK);
+ const bad=scenarios.bad,ref=solveCholesky(bad.A,bad.b),g=cg(bad.A,bad.b,[0,0,0,0],1e-6,500),p=cg(bad.A,bad.b,[0,0,0,0],1e-6,500,bad.A.map((r,i)=>r[i]));
+ const compare=p.converged&&(!g.converged||p.iterations<=g.iterations);
+ add("Comparación de precondicionamiento","Escenario mal condicionado, GC vs GCP","GCP converge en menor o igual número de iteraciones",`GC: ${g.iterations} (${g.converged?"convergió":"no convergió"}); GCP: ${p.iterations} (${p.converged?"convergió":"no convergió"})`,compare);
+ $("qaTable").querySelector("tbody").innerHTML=rows.join("");$("qaSummary").textContent=`Resultado QA: ${passed} de ${rows.length} pruebas aprobadas. Si alguna aparece como REVISAR, revisa los datos o la configuración antes de entregar.`;
+}
+function downloadCSV(){
+ if(!lastResults){alert("Primero ejecuta un cálculo.");return}
+ const r=lastResults;
+ const lines=[
+  ["Escenario",r.scenario], ["Tolerancia",r.tol], ["Precondicionador",r.preconditioner], ["Iteraciones maximas",r.maxIter],
+  ["Residuo relativo GC",r.gc.residual], ["Residuo relativo GCP",r.pcg.residual], ["Iteraciones GC",r.gc.iterations], ["Iteraciones GCP",r.pcg.iterations],
+  ["Kappa_2_A",r.kA], ["Kappa_2_D-1/2_A_D-1/2",r.kM], [],
+  ["Variable","Referencia_UP","GC_UP","GCP_UP","Error_abs_GC","Error_rel_GC","Error_pct_GC","Error_abs_GCP","Error_rel_GCP","Error_pct_GCP"]
+ ];
+ r.direct.x.forEach((v,i)=>{const eg=Math.abs(v-r.gc.x[i]),ep=Math.abs(v-r.pcg.x[i]),rg=v===0?"":eg/Math.abs(v),rp=v===0?"":ep/Math.abs(v);lines.push(["x"+(i+1),v,r.gc.x[i],r.pcg.x[i],eg,rg,rg===""?"":rg*100,ep,rp,rp===""?"":rp*100]);});
+ const csv=lines.map(row=>row.map(v=>String(v??"").replaceAll(";",",")).join(";")).join("\n"),blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="resultados_finanzas_inteligentes.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("studentHeader").textContent="Najib Brayan Huaricona Laurel";
+loadScenario("ideal");
+</script>
+</body>
+</html>
